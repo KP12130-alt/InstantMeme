@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <title>Will It Meme? – AI Mémgenerátor</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Will It Meme?</h1>
+        <p>Írj be egy mondatot és hagyd, hogy az AI memévé alakítsa!</p>
+
+        <form id="memeForm">
+            <input type="text" id="memeText" placeholder="Pl. Amikor pénteken jössz rá, hogy ma kedd van..." required>
+            
+            <select id="memeTemplate" required>
+                <option value="" disabled selected>Válassz sablont...</option>
+                <option value="drake">Drake (Hotline Bling)</option>
+                <option value="wojak">Wojak</option>
+                <option value="galaxy-brain">Galaxy Brain</option>
+                <option value="npc" disabled>NPC (Prémium Sablon)</option>
+            </select>
+            
+            <button type="submit">Memézd meg!</button>
+        </form>
+
+        <div id="memeOutput">
+            <h2>Eredmény:</h2>
+            <div id="imageContainer"></div>
+            <button id="shareButton" style="display:none;">Megosztás 📤</button>
+        </div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
