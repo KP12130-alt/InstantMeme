@@ -1,24 +1,111 @@
 <!DOCTYPE html>
-<html lang="hu">
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>JS Kód Segítő</title>
-  <link rel="stylesheet" href="style.css" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Will It Meme? 😂</title>
+    <style>
+        :root { --accent: #FF6B6B; --bg: #F8F9FA; --text: #333; }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Arial', sans-serif; background: var(--bg); color: var(--text); text-align: center; }
+        header { background: var(--accent); color: white; padding: 1rem; }
+        .hero { padding: 4rem 2rem; background: linear-gradient(135deg, var(--accent), #FF8E8E); color: white; }
+        .hero h1 { font-size: 3rem; margin-bottom: 1rem; }
+        main { max-width: 800px; margin: 2rem auto; padding: 0 2rem; }
+        #inputForm { background: white; padding: 2rem; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); margin-bottom: 2rem; }
+        textarea { width: 100%; height: 100px; padding: 1rem; border: 2px solid #ddd; border-radius: 8px; font-size: 1.1rem; resize: vertical; }
+        button { background: var(--accent); color: white; border: none; padding: 1rem 2rem; font-size: 1.2rem; border-radius: 50px; cursor: pointer; transition: all 0.3s; margin-top: 1rem; }
+        button:hover { transform: scale(1.05); box-shadow: 0 4px 15px rgba(255,107,107,0.4); }
+        .templates { display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap; margin: 1rem 0; }
+        .template-btn { padding: 0.5rem 1rem; background: #eee; border: none; border-radius: 20px; cursor: pointer; transition: background 0.3s; }
+        .template-btn.active { background: var(--accent); color: white; }
+        #memeOutput { display: none; background: white; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.1); overflow: hidden; max-width: 500px; margin: 2rem auto; }
+        #memeCanvas { width: 100%; height: 400px; background: #ddd; position: relative; font-family: Impact, sans-serif; }
+        .meme-text { position: absolute; color: white; text-shadow: 2px 2px 0 #000, -2px -2px 0 #000, 2px -2px 0 #000, -2px 2px 0 #000; font-weight: bold; font-size: 2rem; text-transform: uppercase; pointer-events: none; }
+        .top-text { top: 10%; left: 50%; transform: translateX(-50%); }
+        .bottom-text { bottom: 10%; left: 50%; transform: translateX(-50%); }
+        .share-section { padding: 1rem; background: #f0f0f0; }
+        .premium { background: gold; color: #b8860b; padding: 0.5rem; border-radius: 4px; font-size: 0.9rem; margin-top: 1rem; display: none; }
+        footer { margin-top: 3rem; padding: 2rem; opacity: 0.7; }
+        @media (max-width: 600px) { .hero h1 { font-size: 2rem; } #memeCanvas { height: 300px; } .meme-text { font-size: 1.5rem; } }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <h1>JS Kód Segítő</h1>
-    <p>Írd be, mit szeretnél JavaScriptben megoldani!</p>
+    <header>
+        <h2>😂 Will It Meme? AI Meme Generator</h2>
+        <p>Írj be egy mondatot → Instant mém! (Premium: vízjel nélkül, GIF export)</p>
+    </header>
+    <section class="hero">
+        <h1>Mi legyen a mém?</h1>
+        <p>Példa: "Amikor elfelejtetted a meetinget"</p>
+    </section>
+    <main>
+        <div id="inputForm">
+            <textarea id="userInput" placeholder="Írd be a mondatod... pl. 'Will it compile?'" required></textarea>
+            <div class="templates">
+                <button class="template-btn active" data-template="drake">Drake</button>
+                <button class="template-btn" data-template="wojak">Wojak</button>
+                <button class="template-btn" data-template="npc">NPC</button>
+                <button class="template-btn" data-template="galaxy">Galaxy Brain</button>
+            </div>
+            <button onclick="generateMeme()">GENERÁLJ MÉM-et! 🚀</button>
+            <div class="premium" id="premiumBadge">⭐ PREMIUM: Vízjel nélkül + MP4 export</div>
+        </div>
+        <div id="memeOutput">
+            <canvas id="memeCanvas"></canvas>
+            <div class="share-section">
+                <button onclick="shareMeme()">📱 Megosztás (Twitter/FB)</button>
+                <button onclick="downloadMeme()">💾 Letöltés (PNG)</button>
+                <a href="#" onclick="premiumUpsell()" class="premium">✨ Prémium: GIF/MP4 + Korlátlan</a>
+            </div>
+        </div>
+    </main>
+    <footer>&copy; 2025 Will It Meme? | Havi 990Ft korlátlanra</footer>
+    <script>
+        const templates = {
+            drake: { bg: 'linear-gradient(45deg, #667eea 0%, #764ba2 100%)', top: 'Nem', bottom: 'De igen!' },
+            wojak: { bg: '#FFE5B4', top: 'Értetlenkedés', bottom: 'Réalitás' },
+            npc: { bg: '#A8E6CF', top: 'NPC mondat', bottom: 'Ismétlés' },
+            galaxy: { bg: '#1E3A8A', top: 'Normie gondolat', bottom: 'Galaxy Brain' }
+        };
+        let currentTemplate = 'drake';
 
-    <textarea id="question" placeholder="Pl: hogyan csinálok egy random számot?"></textarea>
+        document.querySelectorAll('.template-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelector('.template-btn.active').classList.remove('active');
+                btn.classList.add('active');
+                currentTemplate = btn.dataset.template;
+            });
+        });
 
-    <button id="generateBtn">Segíts!</button>
+        function generateMeme() {
+            const input = document.getElementById('userInput').value.toUpperCase();
+            const canvas = document.getElementById('memeCanvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = 500; canvas.height = 400;
+            const temp = templates[currentTemplate];
+            ctx.fillStyle = temp.bg; ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    <div id="output" class="output hidden"></div>
-  </div>
+            // Szövegek (AI szimuláció: split & place)
+            ctx.font = 'bold 36px Impact'; ctx.textAlign = 'center';
+            ctx.fillText(temp.top, canvas.width/2, 60);
+            ctx.fillText(input, canvas.width/2, 340);
+            ctx.fillText(temp.bottom, canvas.width/2, 380);
 
-  <script src="script.js"></script>
+            document.getElementById('memeOutput').style.display = 'block';
+            document.getElementById('premiumBadge').style.display = 'block';
+            canvas.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function shareMeme() { alert('Megosztva! (Demo - integráld Twitter API-t)'); }
+        function downloadMeme() { 
+            const canvas = document.getElementById('memeCanvas');
+            const link = document.createElement('a');
+            link.download = 'will-it-meme.png';
+            link.href = canvas.toDataURL();
+            link.click();
+        }
+        function premiumUpsell() { alert('Előfizetés: 990Ft/hó - vízjel nélkül + GIF/MP4!'); }
+    </script>
 </body>
 </html>
-
