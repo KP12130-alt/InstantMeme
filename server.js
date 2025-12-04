@@ -47,6 +47,7 @@ app.listen(port, () => {
     console.log(`Server fut: http://localhost:${port}`);
 });
 
-// A képkezeléshez installáld a szükséges csomagokat:
-// npm install express body-parser
-// npm install sharp (vagy canvas, ha képkezelést akarsz)
+const PORT = process.env.PORT || 3000; 
+app.listen(PORT, () => {
+    console.log(`Server listening on port ${PORT}`);
+});
