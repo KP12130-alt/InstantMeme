@@ -1,0 +1,123 @@
+/*
+ * style.css
+ * Will It Meme? - Stíluslap
+ */
+
+/* Alapvető beállítások */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #f4f4f9; /* Világos, enyhén szürke háttér */
+    color: #333; /* Sötét szöveg */
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center; /* Vízszintesen középre igazítás */
+    align-items: flex-start; /* Felülre igazítás */
+    min-height: 100vh; /* Teljes képernyő magasság */
+}
+
+/* Fő konténer */
+.container {
+    background-color: #ffffff;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px; /* Maximális szélesség a jó olvashatóságért */
+    box-sizing: border-box;
+}
+
+/* Címsorok */
+h1 {
+    color: #4a90e2; /* Kék főcím */
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+h2 {
+    color: #555;
+    border-bottom: 2px solid #e0e0e0;
+    padding-bottom: 5px;
+    margin-top: 30px;
+}
+
+/* Leírás */
+p {
+    text-align: center;
+    margin-bottom: 25px;
+    color: #666;
+}
+
+/* Űrlap elemek (input, select, button) */
+#memeForm {
+    display: flex;
+    gap: 10px; /* Helyköz az elemek között */
+    flex-wrap: wrap; /* Hogy kisebb képernyőn egymás alá törjenek */
+    align-items: center;
+}
+
+#memeText {
+    flex-grow: 1; /* A szövegmező töltse ki a helyet */
+}
+
+input[type="text"],
+select {
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 16px;
+}
+
+button {
+    padding: 12px 20px;
+    background-color: #4a90e2; /* Kék gomb */
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    transition: background-color 0.3s ease;
+}
+
+button:hover {
+    background-color: #357bd8; /* Sötétebb kék lebegtetéskor */
+}
+
+button:disabled {
+    background-color: #a0c3e8;
+    cursor: not-allowed;
+}
+
+/* Eredmény és kép terület */
+#memeOutput {
+    margin-top: 20px;
+    text-align: center;
+}
+
+#imageContainer {
+    margin-top: 15px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 10px;
+    min-height: 150px; /* Helyfoglalás, amíg a kép be nem tölt */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#imageContainer img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 4px;
+}
+
+/* Megosztás gomb (kiemelve) */
+#shareButton {
+    margin-top: 15px;
+    background-color: #2ecc71; /* Zöld gomb */
+}
+
+#shareButton:hover {
+    background-color: #27ae60;
+}
