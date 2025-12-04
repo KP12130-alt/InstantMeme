@@ -1,53 +1,63 @@
-const express = require('express');
-const bodyParser = require('body-parser');
-const path = require('path');
-
+const express = require("express");
+const path = require("path");
 const app = express();
-const port = 3000;
+const PORT = process.env.PORT || 3000;
 
-// Middleware a JSON adatok feldolgozásához
-app.use(bodyParser.json());
+// Middleware a JSON-hez
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// Statikus fájlok kiszolgálása a 'public' mappából (itt lesz a HTML/CSS/JS)
-app.use(express.static(path.join(__dirname, 'public')));
+// Static fájlok kiszolgálása
+app.use(express.static(path.join(__dirname, "public"))); // ide kerüljön index.html, style.css, script.js
 
-// --- 🖼️ Képgeneráló Végpont (A MAGE DOLOG ITT TÖRTÉNIK) ---
-app.post('/generate-meme', async (req, res) => {
-    // 1. Kérés adatai
-    const { text, template } = req.body;
+// Mini tudásbázis
+const helpers = [
+  {
+    key: ["random"],
+    text: `// Random szám 1 és 100 között
+const num = Math.floor(Math.random() * 100) + 1;
+console.log(num);`
+  },
+  {
+    key: ["array", "tömb rendezés"],
+    text: `// Tömb rendezése növekvő sorrendben
+const arr = [5, 2, 9, 1];
+arr.sort((a, b) => a - b);
+console.log(arr);`
+  },
+  {
+    key: ["fetch", "api", "adat lekérés"],
+    text: `// Fetch API példa
+fetch("https://api.example.com/data")
+  .then(res => res.json())
+  .then(data => console.log(data));`
+  },
+  {
+    key: ["dom", "elem kiválasztása"],
+    text: `// DOM elem kiválasztása és módosítása
+document.getElementById("box").innerText = "Hello JS!";`
+  }
+];
 
-    if (!text || !template) {
-        return res.status(400).send({ error: 'Hiányzó szöveg vagy sablon.' });
+// POST endpoint a tippekhez
+app.post("/get-code", (req, res) => {
+  const { question } = req.body;
+  if (!question) return res.json({ code: "Írj be valamit!" });
+
+  const q = question.toLowerCase().trim();
+  let response = "Sajnos nem találtam rá mintát, próbáld másképp megfogalmazni!";
+
+  for (let h of helpers) {
+    if (h.key.some(k => q.includes(k))) {
+      response = h.text;
+      break;
     }
+  }
 
-    console.log(`Mém generálása... Szöveg: "${text}", Sablon: ${template}`);
-
-    // --- AZ IGAZI KÉP GENERÁLÁS LOGIKA IDE JÖN ---
-    // (A legegyszerűbb, ha itt használsz egy könyvtárat, pl. 'sharp' vagy 'canvas' a szöveg ráhelyezéséhez)
-    
-    // Példa szimuláció, amíg nincs valódi képkezelés:
-    try {
-        // Kép generálása... (pl. "sharp" könyvtárral)
-        // A kód itt lefut... és létrehoz egy 'meme.png' fájlt a 'generated' mappában
-
-        // Tegyük fel, hogy a sikeres generálás után a kép elérhető
-        const imageUrl = `/generated/meme-${Date.now()}.png`; // Elméleti elérési út
-        
-        // Visszaküldjük az elérési utat a front-endnek
-        res.status(200).send({ imageUrl: imageUrl });
-
-    } catch (error) {
-        console.error('Hiba a mém generálásakor:', error);
-        res.status(500).send({ error: 'Nem sikerült generálni a képet.' });
-    }
+  res.json({ code: response });
 });
 
 // Szerver indítása
-app.listen(port, () => {
-    console.log(`Server fut: http://localhost:${port}`);
-});
-
-const PORT = process.env.PORT || 3000; 
 app.listen(PORT, () => {
-    console.log(`Server listening on port ${PORT}`);
+  console.log(`Server running on http://localhost:${PORT}`);
 });
